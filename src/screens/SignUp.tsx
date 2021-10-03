@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ScrollView, Text } from "react-native";
+import { Alert, ScrollView, Text } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { createUser } from "../auth/authManager";
 import Button from "../components/Button";
@@ -7,7 +7,7 @@ import Container from "../components/Container";
 import Input from "../components/Input";
 import context from "../context/context";
 import useForm from "../hooks/useForm";
-import { userLoading, userSuccess } from "../reducers/userActions";
+import { userFailure, userLoading, userSuccess } from "../reducers/userActions";
 import signUpStyles from "../styles/signUpStyles";
 import NavigationProps from "../types/NavigationProps";
 
@@ -37,9 +37,14 @@ const SignUp = ({ navigation }: NavigationProps<"SignUp">) => {
   const submit = async (data: ILoginData) => {
     userDispatch(userLoading());
     const { email, password, name } = data;
-    const user = await createUser(email, password, name);
-    userDispatch(userSuccess(user));
-    navigation.navigate("Home");
+    try {
+      const user = await createUser(email, password, name);
+      userDispatch(userSuccess(user));
+      navigation.navigate("Home");
+    } catch (err: any) {
+      userDispatch(userFailure(err.message));
+      Alert.alert("SignUp Error", err.message);
+    }
   };
 
   useEffect(() => {
@@ -53,16 +58,16 @@ const SignUp = ({ navigation }: NavigationProps<"SignUp">) => {
       {loading && (
         <ActivityIndicator
           style={signUpStyles.loading}
-          size="small"
-          color="#0000ff"
+          size={30}
+          color="#1770ff"
         />
       )}
 
       {privateLoading && (
         <ActivityIndicator
           style={signUpStyles.loading}
-          size="small"
-          color="#0000ff"
+          size={30}
+          color="#1770ff"
         />
       )}
 

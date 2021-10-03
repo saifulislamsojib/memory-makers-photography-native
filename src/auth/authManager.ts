@@ -44,8 +44,7 @@ export const createUser = (email: string, password: string, name: string) => {
 export const signingUser = (email: string, password: string) => {
   return auth()
     .signInWithEmailAndPassword(email, password)
-    .then((res) => setUser(res.user))
-    .catch((err) => err.message);
+    .then((res) => setUser(res.user));
 };
 
 export const googleSignIn = () => {

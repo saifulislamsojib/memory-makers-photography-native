@@ -1,10 +1,9 @@
-import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Modal, ModalProps, Platform, StyleSheet, View } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 
 interface IProps extends ModalProps {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  children: React.ReactNode;
   isClose?: boolean;
   shadow?: boolean;
 }
@@ -34,7 +33,7 @@ const CustomModal = ({
         <View style={[styles.modalView, shadow && styles.shadow]}>
           {isClose && (
             <View style={styles.button}>
-              <Ionicons
+              <Icon
                 name="md-close"
                 size={30}
                 onPress={() => setVisible(false)}

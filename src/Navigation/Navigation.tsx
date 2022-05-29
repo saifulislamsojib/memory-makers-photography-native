@@ -1,11 +1,9 @@
-import {
-  FontAwesome,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useContext } from "react";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import context from "../context/context";
 import Dashboard from "../screens/Dashboard";
 import Home from "../screens/Home";
@@ -13,7 +11,7 @@ import SignIn from "../screens/SignIn";
 import SignOut from "../screens/SignOut";
 import SignUp from "../screens/SignUp";
 
-const Tab = createMaterialBottomTabNavigator();
+const { Navigator, Screen } = createMaterialBottomTabNavigator();
 
 const Navigation = () => {
   const { loggedInUser } = useContext(context);
@@ -21,7 +19,7 @@ const Navigation = () => {
   const { user } = loggedInUser;
   return (
     <NavigationContainer>
-      <Tab.Navigator
+      <Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color }) => {
             if (route.name === "Home") {
@@ -43,30 +41,30 @@ const Navigation = () => {
           tabBarColor: "#1770ff",
         })}
       >
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Dashboard" component={Dashboard} />
+        <Screen name="Home" component={Home} />
+        <Screen name="Dashboard" component={Dashboard} />
         {!user.email && (
-          <Tab.Screen
+          <Screen
             name="SignIn"
             component={SignIn}
             options={{ title: "Sign In" }}
           />
         )}
         {!user.email && (
-          <Tab.Screen
+          <Screen
             name="SignUp"
             component={SignUp}
             options={{ title: "Sign Up" }}
           />
         )}
         {user.email && (
-          <Tab.Screen
+          <Screen
             name="SignOut"
             component={SignOut}
             options={{ title: "Sign Out" }}
           />
         )}
-      </Tab.Navigator>
+      </Navigator>
     </NavigationContainer>
   );
 };

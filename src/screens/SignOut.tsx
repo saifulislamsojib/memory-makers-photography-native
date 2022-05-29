@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { ActivityIndicator, StyleSheet, Text } from "react-native";
-import { userSignOut } from "../auth/authManager";
+import { logout } from "../auth/authManager";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import context from "../context/context";
@@ -14,7 +14,7 @@ const SignOut = ({ navigation }: NavigationProps<"SignOut">) => {
 
   const handleSignOut = async () => {
     userDispatch(userLoading());
-    await userSignOut();
+    await logout();
     userDispatch(userLogout());
     navigation.navigate("SignUp");
   };

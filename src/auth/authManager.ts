@@ -1,72 +1,89 @@
-import firebase from "firebase/app";
-import "firebase/auth";
-import firebaseConfig from "../../configs/firebase.config";
+import { initializeApp } from "firebase/app";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  updatePassword,
+  updateProfile,
+  User,
+} from "firebase/auth";
+import firebaseConfig from "../configs/firebase.config";
+import { IUser } from "../reducers/userReducer";
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+interface IProfile {
+  displayName: string;
+  photoURL?: string;
 }
 
-export const auth = firebase.auth;
+const profileUpdate = async (name: string, photo?: string) => {
+  let profile: IProfile = { displayName: name };
 
-export const updateProfile = (displayName?: string, photoURL?: string) => {
-  const user = auth().currentUser;
-  let profile = { displayName } as firebase.User;
-  if (photoURL) {
-    profile = { displayName, photoURL } as firebase.User;
+  if (photo) {
+    profile = { displayName: name, photoURL: photo };
   }
 
-  return user
-    ?.updateProfile(profile)
-    .then(() => true)
-    .catch(() => false);
+  await updateProfile(auth.currentUser!, profile);
 };
 
-export const setUser = (user: firebase.User | null, name?: string) => {
-  const { email, displayName, photoURL, emailVerified } = user || {};
-  const newUser = {
-    email,
+const setUser = (user: User, name?: string) => {
+  const { displayName, email, emailVerified, photoURL } = user;
+  if (name) {
+    profileUpdate(name);
+  }
+  return {
     name: displayName || name,
-    photo: photoURL,
+    email,
     emailVerified,
-  };
-  return newUser;
+    photo: photoURL,
+  } as IUser;
 };
 
-export const createUser = (email: string, password: string, name: string) => {
-  return auth()
-    .createUserWithEmailAndPassword(email, password)
-    .then((res) => {
-      updateProfile(name);
-      return setUser(res.user, name);
-    });
+export const getUser = (handleUser: (user: IUser | null) => void) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      handleUser(setUser(user));
+    } else {
+      handleUser(null);
+    }
+  });
+  return unsubscribe;
 };
 
-export const signingUser = (email: string, password: string) => {
-  return auth()
-    .signInWithEmailAndPassword(email, password)
-    .then((res) => setUser(res.user));
+export const createUser = async (
+  email: string,
+  password: string,
+  name: string
+) => {
+  const res = await createUserWithEmailAndPassword(auth, email, password);
+  return setUser(res.user, name);
 };
 
-export const googleSignIn = () => {
-  const provider = new auth.GoogleAuthProvider();
-
-  return auth()
-    .signInWithPopup(provider)
-    .then((res) => setUser(res.user))
-    .catch((err) => err.message);
+export const signInUser = async (email: string, password: string) => {
+  const res = await signInWithEmailAndPassword(auth, email, password);
+  return setUser(res.user);
 };
 
-export const fbSignIn = () => {
-  const provider = new auth.FacebookAuthProvider();
+// export const googleLogin = async () => {
+//   const provider = new GoogleAuthProvider();
+//   const res = await signInWithPopup(auth, provider);
+//   return setUser(res.user);
+// };
 
-  return auth()
-    .signInWithPopup(provider)
-    .then((res) => setUser(res.user))
-    .catch((err) => err.message);
+// export const githubLogin = async () => {
+//   const provider = new GithubAuthProvider();
+//   const res = await signInWithPopup(auth, provider);
+//   return setUser(res.user);
+// };
+
+export const logout = async () => {
+  await signOut(auth);
 };
 
-export const userSignOut = () => {
-  return auth()
-    .signOut()
-    .then(() => true);
+export const passwordUpdate = async (newPassword: string) => {
+  await updatePassword(auth.currentUser!, newPassword);
 };

@@ -1,24 +1,21 @@
-import React, { ReactNode, useEffect, useReducer } from "react";
-import { auth, setUser } from "../auth/authManager";
+import React, { FC, useEffect, useReducer } from "react";
+import { getUser } from "../auth/authManager";
 import { privateLoading, userSuccess } from "../reducers/userActions";
 import userReducer, { initialState } from "../reducers/userReducer";
 import context from "./context";
 
-interface IProps {
-  children: ReactNode;
-}
-
-const ContextContainer = ({ children }: IProps) => {
+const ContextContainer: FC = ({ children }) => {
   const [loggedInUser, userDispatch] = useReducer(userReducer, initialState);
 
   useEffect(() => {
-    auth().onAuthStateChanged((user) => {
+    const unsubscribe = getUser((user) => {
       if (user) {
-        userDispatch(userSuccess(setUser(user)));
+        userDispatch(userSuccess(user));
       } else {
         userDispatch(privateLoading());
       }
     });
+    return unsubscribe;
   }, []);
 
   const value = {

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Text } from "react-native";
-import { signingUser } from "../auth/authManager";
+import { signInUser } from "../auth/authManager";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Input from "../components/Input";
@@ -33,12 +33,13 @@ const SignIn = ({ navigation }: NavigationProps<"SignIn">) => {
     userDispatch(userLoading());
     const { email, password } = data;
     try {
-      const user = await signingUser(email, password);
+      const user = await signInUser(email, password);
       userDispatch(userSuccess(user));
       navigation.navigate("Home");
     } catch (err: any) {
-      userDispatch(userFailure(err.message));
-      Alert.alert("SignUp Error", err.message);
+      const message = err.message?.split("/")?.[1].split?.(")")?.[0];
+      userDispatch(userFailure(message));
+      Alert.alert("Sign In Error", message);
     }
   };
 
@@ -73,7 +74,7 @@ const SignIn = ({ navigation }: NavigationProps<"SignIn">) => {
             placeholder="Enter your email"
             onChangeText={(value) => handleInput(value, "email")}
             value={inputData.email || ""}
-            autoCompleteType="email"
+            autoComplete="email"
           />
           {error.email && (
             <Text style={signUpStyles.error}>Valid Email Is Required</Text>
@@ -85,7 +86,7 @@ const SignIn = ({ navigation }: NavigationProps<"SignIn">) => {
             toggleFunc={toggle}
             onChangeText={(value) => handleInput(value, "password")}
             value={inputData.password || ""}
-            autoCompleteType="password"
+            autoComplete="password"
           />
           {error.password && (
             <Text style={signUpStyles.error}>
@@ -93,7 +94,7 @@ const SignIn = ({ navigation }: NavigationProps<"SignIn">) => {
             </Text>
           )}
           <Button
-            title="Sign Up"
+            title="Sign In"
             style={signUpStyles.button}
             onPress={() => handleSubmit(submit)}
             disabled={loading}

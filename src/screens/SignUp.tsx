@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, ScrollView, Text } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator, Alert, ScrollView, Text } from "react-native";
 import { createUser } from "../auth/authManager";
 import Button from "../components/Button";
 import Container from "../components/Container";
@@ -42,8 +41,9 @@ const SignUp = ({ navigation }: NavigationProps<"SignUp">) => {
       userDispatch(userSuccess(user));
       navigation.navigate("Home");
     } catch (err: any) {
-      userDispatch(userFailure(err.message));
-      Alert.alert("SignUp Error", err.message);
+      const message = err.message?.split("/")?.[1].split?.(")")?.[0];
+      userDispatch(userFailure(message));
+      Alert.alert("SignUp Error", message);
     }
   };
 
@@ -79,7 +79,7 @@ const SignUp = ({ navigation }: NavigationProps<"SignUp">) => {
             placeholder="Enter your name"
             onChangeText={(value) => handleInput(value, "name")}
             value={inputData.name || ""}
-            autoCompleteType="name"
+            autoComplete="name"
           />
           {error.name && (
             <Text style={signUpStyles.error}>
@@ -91,7 +91,7 @@ const SignUp = ({ navigation }: NavigationProps<"SignUp">) => {
             placeholder="Enter your email"
             onChangeText={(value) => handleInput(value, "email")}
             value={inputData.email || ""}
-            autoCompleteType="email"
+            autoComplete="email"
           />
           {error.email && (
             <Text style={signUpStyles.error}>Valid Email Is Required</Text>
@@ -103,7 +103,7 @@ const SignUp = ({ navigation }: NavigationProps<"SignUp">) => {
             toggleFunc={toggle}
             onChangeText={(value) => handleInput(value, "password")}
             value={inputData.password || ""}
-            autoCompleteType="password"
+            autoComplete="password"
           />
           {error.password && (
             <Text style={signUpStyles.error}>
@@ -117,7 +117,7 @@ const SignUp = ({ navigation }: NavigationProps<"SignUp">) => {
             toggleFunc={toggle}
             onChangeText={(value) => handleInput(value, "confirmPassword")}
             value={inputData.confirmPassword || ""}
-            autoCompleteType="password"
+            autoComplete="password"
           />
           {error.confirmPassword && (
             <Text style={signUpStyles.error}>Confirm Password Not Matched</Text>

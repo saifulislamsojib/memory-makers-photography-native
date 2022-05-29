@@ -1,4 +1,3 @@
-import { Feather } from "@expo/vector-icons";
 import React, { ForwardedRef, forwardRef, useState } from "react";
 import {
   StyleSheet,
@@ -7,6 +6,7 @@ import {
   TextInputProps,
   View,
 } from "react-native";
+import Icon from "react-native-vector-icons/Feather";
 
 interface IProps extends TextInputProps {
   label?: string;
@@ -40,7 +40,7 @@ const Input = (
           ref={ref}
         />
         {secureTextEntry !== undefined && toggleFunc && (
-          <Feather
+          <Icon
             onPress={toggleFunc}
             name="eye"
             size={24}

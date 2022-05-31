@@ -1,43 +1,24 @@
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import React, { useContext } from "react";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import context from "../context/context";
+import React from "react";
+import useRootContext from "../hooks/useRootContext";
 import Dashboard from "../screens/Dashboard";
 import Home from "../screens/Home";
 import SignIn from "../screens/SignIn";
 import SignOut from "../screens/SignOut";
 import SignUp from "../screens/SignUp";
+import tabBarIcon from "./tabBarIcon";
 
 const { Navigator, Screen } = createMaterialBottomTabNavigator();
 
 const Navigation = () => {
-  const { loggedInUser } = useContext(context);
+  const { user } = useRootContext().loggedInUser;
 
-  const { user } = loggedInUser;
   return (
     <NavigationContainer>
       <Navigator
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color }) => {
-            if (route.name === "Home") {
-              return <FontAwesome name="home" size={26} color={color} />;
-            } else if (route.name === "Dashboard") {
-              return <MaterialIcons name="dashboard" size={26} color={color} />;
-            } else if (route.name === "SignUp") {
-              return (
-                <MaterialCommunityIcons
-                  name={focused ? "account-plus" : "account-plus-outline"}
-                  size={26}
-                  color={color}
-                />
-              );
-            } else if (route.name === "SignIn" || route.name === "SignOut") {
-              return <FontAwesome name="sign-in" size={26} color={color} />;
-            }
-          },
+          tabBarIcon: tabBarIcon(route),
           tabBarColor: "#1770ff",
         })}
       >

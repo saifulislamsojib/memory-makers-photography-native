@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, ScrollView, Text } from "react-native";
 import { createUser } from "../auth/authManager";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Input from "../components/Input";
-import context from "../context/context";
 import useForm from "../hooks/useForm";
+import useRootContext from "../hooks/useRootContext";
 import { userFailure, userLoading, userSuccess } from "../reducers/userActions";
 import signUpStyles from "../styles/signUpStyles";
 import NavigationProps from "../types/NavigationProps";
@@ -27,7 +27,7 @@ const SignUp = ({ navigation }: NavigationProps<"SignUp">) => {
     "confirmPassword",
   ]);
 
-  const { loggedInUser, userDispatch } = useContext(context);
+  const { loggedInUser, userDispatch } = useRootContext();
 
   const { loading, privateLoading, user } = loggedInUser;
 

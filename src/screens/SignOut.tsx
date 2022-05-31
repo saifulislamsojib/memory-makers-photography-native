@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
+import React from "react";
 import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import { logout } from "../auth/authManager";
 import Button from "../components/Button";
 import Container from "../components/Container";
-import context from "../context/context";
+import useRootContext from "../hooks/useRootContext";
 import { userLoading, userLogout } from "../reducers/userActions";
 import NavigationProps from "../types/NavigationProps";
 
 const SignOut = ({ navigation }: NavigationProps<"SignOut">) => {
-  const { userDispatch, loggedInUser } = useContext(context);
+  const { userDispatch, loggedInUser } = useRootContext();
 
   const { loading, privateLoading } = loggedInUser;
 
